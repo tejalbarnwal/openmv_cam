@@ -1,25 +1,19 @@
-"""Sends images acquired from the OpenMV Cam via the serial port.
-
-Important:
-    This script should be copied to the OpenMV Cam as `main.py`.
-
-Source:
-    https://github.com/openmv/openmv/blob/master/scripts/examples/02-Board-Control/usb_vcp.py
-
-"""
-import sensor
-import ustruct
-import pyb
+import sensor, ustruct, pyb, time
 
 usb_vcp = pyb.USB_VCP()
-# Disable USB interrupt (CTRL-C by default) when sending raw data (i.e. images)
-# See: https://docs.openmv.io/library/pyb.USB_VCP.html#pyb.USB_VCP.setinterrupt
 usb_vcp.setinterrupt(-1)
 
+green_led = pyb.LED(2)
+blue_led  = pyb.LED(3)
+
 sensor.reset()
-sensor.set_pixformat(sensor.RGB565)
-sensor.set_framesize(sensor.VGA)
-sensor.skip_frames(time=2000)  # wait for settings to take effect!
+sensor.set_pixformat(sensor.GRAYSCALE)
+sensor.set_framesize(sensor.QVGA)
+sensor.set_vflip(True)
+sensor.set_hmirror(True)
+sensor.skip_frames(time=2000) 
+
+list_ = [91.1, 92.2, 93.3, 94.4, 95.5, 96.6, 97.7, 88.8, 99.9, 910.10, 11.0, 12.0]
 
 while True:
 
@@ -29,3 +23,15 @@ while True:
         image = sensor.snapshot().compress()
         usb_vcp.send(ustruct.pack('<L', image.size()))
         usb_vcp.send(image)
+        
+        command_d = usb_vcp.recv(4, timeout=5000)
+        if command_d == b'list':
+        blue_led.on()
+        time.sleep(2)
+        blue_led.off()
+        s = ustruct.pack('12d', *list_)
+        usb_vcp.send(s)
+        green_led.on()
+        time.sleep(2)
+        green_led.off()
+

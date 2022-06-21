@@ -56,7 +56,19 @@ class OpenMVCam:
 
         # Read 'size' bytes from serial port
         size = struct.unpack('<L', self.port.read(4))[0]
+        print("size of the image:", size)
         image_data = self.port.read(size)
         image = np.array(PILImage.open(io.BytesIO(image_data)))
+
+        list_ = 'list'
+        if sys.version_info[0] >= 3:
+            list_ = list_.encode('utf-8')
+        self.port.write(list_)
+        self.port.flush()
+        print("Wrote List to the NV")
+        list_size = struct.unpack('12d', self.port.read(96))
+        print(list_size)
+        # list_data = self.port.read(list_size)
+        # print(list_data)
 
         return image

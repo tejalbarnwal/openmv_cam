@@ -14,7 +14,7 @@
             <param name="calibration" value="$(arg calibration)" />
         </node>
 
-        <node pkg="image_proc" name="image_proc" type="image_proc" />
+        <!-- <node pkg="image_proc" name="image_proc" type="image_proc" /> -->
 
     </group>
 
