@@ -28,11 +28,10 @@ while True:
         count = []
         for origin in originList:
             sum_ = 0
-            for offset in range(cell_size):
-                sum_ += (image.get_pixel(origin[0]+offset, origin[1]+offset))< black
-                sum_ += (image.get_pixel(origin[0] + (cell_size-1) - offset, origin[1]+offset)) < black
-                sum_ += (image.get_pixel(origin[0]+offset, origin[1]+(cell_size//2)-1)) < black
-                sum_ += (image.get_pixel(origin[0]+(cell_size//2)-1, origin[1]+offset)) < black
+            for i in range(cell_size):
+                for j in range(cell_size):
+                    sum_ += (image.get_pixel(origin[0]+i, origin[1]+j)) < black
+                    
             count.append(sum_)
         
         image1 = image.compress()
